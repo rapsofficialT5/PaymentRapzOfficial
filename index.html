@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
+    <title>Rapz Official Payment</title>
+    <!-- Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: #e6f2ff;
+            background: linear-gradient(145deg, #cfe7ff, #b0d4ff);
+            color: #1e2b3c;
+            min-height: 100vh;
+        }
+
+        /* ========== INTRO LOADING BIRU CERAH ========== */
+        .intro-screen {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: #004aad;
+            background: radial-gradient(circle at 30% 30%, #0077be, #003f88);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            transition: opacity 0.8s ease;
+            overflow: hidden;
+        }
+
+        .intro-screen.hide {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* Floating Elements Biru */
+        .floating-elements {
+            position: absolute;
+            width: 100%; height: 100%;
+            top: 0; left: 0;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        .floating-elements i {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.1);
+            font-size: 4rem;
+            animation: float 10s infinite ease-in-out;
+        }
+
+        .floating-elements i:nth-child(1) { top: 10%; left: 10%; font-size: 5rem; }
+        .floating-elements i:nth-child(2) { top: 20%; right: 15%; font-size: 6rem; animation-delay: 1s; }
+        .floating-elements i:nth-child(3) { bottom: 15%; left: 20%; font-size: 5.5rem; animation-delay: 2s; }
+        .floating-elements i:nth-child(4) { bottom: 25%; right: 10%; font-size: 7rem; animation-delay: 3s; }
+        .floating-elements i:nth-child(5) { top: 40%; left: 5%; font-size: 4.5rem; animation-delay: 1.5s; }
+        .floating-elements i:nth-child(6) { top: 60%; right: 5%; font-size: 5rem; animation-delay: 2.5s; }
+
+        @keyframes float {
+            0%,100%{ transform: translateY(0) rotate(0deg); }
+            50%{ transform: translateY(-40px) rotate(10deg); }
+        }
+
+        /* Partikel Biru */
+        .particles {
+            position: absolute;
+            width: 100%; height: 100%;
+            z-index: 2;
+        }
+        .particle {
+            position: absolute;
+            width: 4px; height: 4px;
+            background: #a0c8ff;
+            border-radius: 50%;
+            animation: particleFloat 5s infinite;
+        }
+        @keyframes particleFloat {
+            0% { transform: translateY(100vh) scale(1); opacity: 0; }
+            10% { opacity: 1; }
+            90% { opacity: 1; }
+            100% { transform: translateY(-10vh) scale(2); opacity: 0; }
+        }
+
+        .intro-card {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(15px);
+            border: 2px solid white;
+            border-radius: 70px;
+            padding: 3rem 2.5rem;
+            text-align: center;
+            max-width: 540px;
+            width: 90%;
+            box-shadow: 0 0 100px #0077ff;
+            position: relative;
+            z-index: 10;
+            animation: cardGlow 3s infinite alternate;
+        }
+        @keyframes cardGlow {
+            from { box-shadow: 0 0 40px #0099ff; }
+            to { box-shadow: 0 0 120px #66c0ff; }
+        }
+
+        .intro-logo {
+            width: 140px; height: 140px;
+            margin: 0 auto 1.5rem;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 4px solid white;
+            box-shadow: 0 0 60px #66c0ff;
+            background: white;
+        }
+        .intro-logo img {
+            width: 100%; height: 100%;
+            object-fit: cover;
+        }
+
+        .intro-title {
+            font-size: 2.5rem; font-weight: 800;
+            color: white;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 20px #0077ff;
+        }
+        .intro-title span { color: #c3e0ff; }
+
+        /* TYPING ANIMATION */
+        .typing-container {
+            background: rgba(0, 0, 0, 0.1);
+            border-radius: 60px;
+            padding: 1rem 1.5rem;
+            margin: 1.8rem 0;
+            border: 1px solid white;
+        }
+        .typing-text {
+            font-size: 1.3rem;
+            color: white;
+            min-height: 3rem;
+            font-weight: 500;
+        }
+        .typing-cursor {
+            display: inline-block;
+            width: 2px; height: 1.8rem;
+            background: white;
+            margin-left: 5px;
+            animation: blink 1s infinite;
+        }
+        @keyframes blink { 50% { opacity: 0; } }
+
+        .loader-wrapper { margin: 2rem 0; }
+        .loader-bg {
+            width: 100%; height: 6px;
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        .loader-bar {
+            height: 100%; width: 0%;
+            background: linear-gradient(90deg, white, #c3e0ff, white);
+            border-radius: 10px;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 20px white;
+        }
+        .loader-text {
+            margin-top: 1rem;
+            color: white;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+        }
+
+        .enter-btn {
+            background: white;
+            border: none; color: #004aad;
+            font-weight: 700; font-size: 1.2rem;
+            padding: 1rem 3rem; border-radius: 60px;
+            cursor: pointer; margin-top: 1rem;
+            opacity: 0; transform: translateY(20px);
+            animation: fadeUp 0.6s ease 4.2s forwards;
+            box-shadow: 0 20px 40px #001f4a;
+        }
+        .enter-btn:hover { transform: scale(1.03) translateY(-2px); background: #c3e0ff; }
+        @keyframes fadeUp { to { opacity: 1; transform: translateY(0); } }
+
+        /* ========== MAIN PAYMENT PAGE ========== */
+        .main-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            opacity: 0;
+            animation: fadeMain 0.7s ease 0.3s forwards;
+        }
+        @keyframes fadeMain { to { opacity: 1; } }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+        .payment-header h1 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            color: #004aad;
+            text-shadow: 0 5px 15px rgba(0, 74, 173, 0.2);
+        }
+        .payment-header p {
+            color: #2c3e50;
+            margin-top: 0.5rem;
+        }
+
+        .payment-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+      .payment-card {
+            background: white;
+            border-radius: 40px;
+            padding: 2rem;
+            text-align: center;
+            transition: 0.3s;
+            box-shadow: 0 20px 40px rgba(0, 74, 173, 0.1);
+            border: 1px solid #b8d9ff;
+        }
+        .payment-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 30px 60px rgba(0, 119, 255, 0.2);
+            border-color: #004aad;
+        }
+
+        .payment-logo {
+            width: 80px; height: 80px;
+            margin: 0 auto 1rem;
+            background: #f0f8ff;
+            border-radius: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border: 2px solid #b8d9ff;
+        }
+        .payment-logo img {
+            width: 100%; height: 100%;
+            object-fit: contain;
+        }
+
+        .payment-card h3 {
+            font-size: 2rem;
+            color: #004aad;
+            margin: 1rem 0 0.5rem;
+        }
+
+        .account-name {
+            color: #0077be;
+            background: #e6f2ff;
+            padding: 0.3rem 1rem;
+            border-radius: 60px;
+            display: inline-block;
+            font-size: 1rem;
+            border: 1px solid #b8d9ff;
+        }
+
+        .payment-number {
+            background: #f0f8ff;
+            border: 1px solid #b8d9ff;
+            border-radius: 60px;
+            padding: 1rem;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #004aad;
+            margin: 1.5rem 0;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        .payment-number:hover {
+            background: #004aad;
+            color: white;
+            border-color: #004aad;
+        }
+
+        .qris-preview {
+            width: 180px; height: 180px;
+            margin: 1rem auto;
+            cursor: pointer;
+            border: 3px solid #004aad;
+            border-radius: 20px;
+            overflow: hidden;
+            background: white;
+            padding: 5px;
+        }
+        .qris-preview img {
+            width: 100%; height: 100%;
+            object-fit: contain;
+        }
+
+        .popup-btn {
+            background: #004aad;
+            border: none; color: white;
+            padding: 1rem;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.1rem;
+        }
+        .popup-btn:hover {
+            background: #0077be;
+            transform: scale(1.02);
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            align-items: center;
+            justify-content: center;
+            z-index: 2000;
+            padding: 1rem;
+        }
+        .modal-content {
+            background: white;
+            border-radius: 60px;
+            padding: 2rem;
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            border: 4px solid #004aad;
+        }
+        .modal-content img {
+            max-width: 350px;
+            width: 100%;
+            margin: 1rem 0;
+            border-radius: 30px;
+        }
+        .modal-number {
+            background: #f0f8ff;
+            border: 2px solid #004aad;
+            border-radius: 60px;
+            padding: 1rem;
+            font-size: 1.5rem;
+            color: #004aad;
+            margin: 1.5rem 0;
+        }
+        .modal-close {
+            background: #004aad;
+            color: white;
+            border: none;
+            padding: 1rem 2.5rem;
+            border-radius: 60px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+        }
+        .modal-close:hover { background: #0077be; }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            color: #2c3e50;
+            border-top: 1px solid #b8d9ff;
+            padding-top: 2rem;
+        }
+        .footer a {
+            color: #004aad;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        audio { display: none; }
+    </style>
+</head>
+<body>
+    <!-- INTRO LOADING BIRU CERAH -->
+    <div class="intro-screen" id="introScreen">
+        <div class="floating-elements">
+            <i class="fas fa-circle"></i> <i class="fas fa-square"></i> <i class="fas fa-triangle"></i>
+            <i class="fas fa-circle"></i> <i class="fas fa-square"></i> <i class="fas fa-triangle"></i>
+        </div>
+        <div class="particles" id="particles"></div>
+        <div class="intro-card">
+            <div class="intro-logo">
+                <img src="https://images.bukaolshop.com/hosting/181218/16aea1c112a5636278.png" alt="Rapz Logo" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\' viewBox=\'0 0 100 100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23004aad\'/%3E%3Ctext x=\'50\' y=\'70\' font-size=\'40\' text-anchor=\'middle\' fill=\'white\'%3ER%3C/text%3E%3C/svg%3E';">
+            </div>
+            <div class="intro-title">RAPZ <span>OFFICIAL</span></div>
+            <div class="typing-container">
+                <div class="typing-text" id="typingText"></div>
+                <span class="typing-cursor"></span>
+            </div>
+            <div class="loader-wrapper">
+                <div class="loader-bg">
+                    <div class="loader-bar" id="loadingBar"></div>
+                </div>
+                <div class="loader-text" id="loadingPercent">0%</div>
+            </div>
+            <button class="enter-btn" id="enterBtn">LIHAT PAYMENT</button>
+        </div>
+    </div>
+        <!-- MAIN PAYMENT PAGE -->
+    <div class="main-content" id="mainContent" style="display: none;">
+        <div class="payment-header">
+            <h1>RAPZ OFFICIAL PAYMENT</h1>
+            <p>Pilih metode pembayaran yang tersedia</p>
+        </div>
+
+        <div class="payment-grid">
+            <!-- DANA -->
+            <div class="payment-card">
+                <div class="payment-logo">
+                    <img src="https://images.bukaolshop.com/hosting/181218/f2f4904ff62a785161.png" alt="DANA" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\' viewBox=\'0 0 50 50\'%3E%3Ccircle cx=\'25\' cy=\'25\' r=\'22\' fill=\'%23004aad\'/%3E%3Ctext x=\'25\' y=\'35\' font-size=\'20\' text-anchor=\'middle\' fill=\'white\'%3ED%3C/text%3E%3C/svg%3E';">
+                </div>
+                <h3>DANA</h3>
+                <div class="account-name">a/n Rapz Official</div>
+                <div class="payment-number" onclick="copyNumber('082125537797')">
+                    <i class="fas fa-phone-alt"></i> 0821 2553 7797
+                </div>
+                <button class="popup-btn" onclick="showPopup('dana')">
+                    <i class="fas fa-eye"></i> Tampilkan
+                </button>
+            </div>
+
+            <!-- OVO -->
+            <div class="payment-card">
+                <div class="payment-logo">
+                    <img src="https://images.bukaolshop.com/hosting/181218/8d3023b17da2729565.png" alt="OVO" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\' viewBox=\'0 0 50 50\'%3E%3Ccircle cx=\'25\' cy=\'25\' r=\'22\' fill=\'%23004aad\'/%3E%3Ctext x=\'25\' y=\'35\' font-size=\'20\' text-anchor=\'middle\' fill=\'white\'%3EO%3C/text%3E%3C/svg%3E';">
+                </div>
+                <h3>OVO</h3>
+                <div class="account-name">a/n Rapz Official</div>
+                <div class="payment-number" onclick="copyNumber('083153125057')">
+                    <i class="fas fa-phone-alt"></i> 0831 5312 5057
+                </div>
+                <button class="popup-btn" onclick="showPopup('ovo')">
+                    <i class="fas fa-eye"></i> Tampilkan
+                </button>
+            </div>
+
+            <!-- QRIS -->
+            <div class="payment-card">
+                <div class="payment-logo">
+                    <img src="https://images.bukaolshop.com/hosting/181218/111e83c3a6f5204498.png" alt="QRIS" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'50\' height=\'50\' viewBox=\'0 0 50 50\'%3E%3Crect width=\'50\' height=\'50\' fill=\'%23004aad\'/%3E%3Ctext x=\'10\' y=\'30\' fill=\'white\'%3EQR%3C/text%3E%3C/svg%3E';">
+                </div>
+                <h3>QRIS</h3>
+                <div class="qris-preview" onclick="openQrisModal()">
+                    <img src="https://images.bukaolshop.com/hosting/181218/4af8d6355866891570.png" alt="QRIS" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=RapzOfficialPayment';">
+                </div>
+                <button class="popup-btn" onclick="openQrisModal()">
+                    <i class="fas fa-qrcode"></i> Tampilkan QRIS
+                </button>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>developer rapz official 2026</p>
+            <p style="margin-top: 0.8rem;">📱 <a href="https://wa.me/6285150895395">Hubungi Admin</a></p>
+            <p style="font-size:0.8rem; margin-top:1rem;">wajib kirim bukti ke admin · no bukti no proses</p>
+        </div>
+    </div>
+
+    <!-- MODAL DANA -->
+    <div class="modal" id="danaModal">
+        <div class="modal-content">
+            <img src="https://images.bukaolshop.com/hosting/181218/f2f4904ff62a785161.png" style="max-width:120px;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23004aad\'/%3E%3C/svg%3E';">
+            <h2 style="color:#004aad;">DANA</h2>
+            <div class="account-name" style="font-size:1.2rem;">a/n Rapz Official</div>
+            <div class="modal-number">0821 2553 7797</div>
+            <button class="modal-close" onclick="closeModal('danaModal')">Tutup</button>
+        </div>
+    </div>
+
+    <!-- MODAL OVO -->
+    <div class="modal" id="ovoModal">
+        <div class="modal-content">
+            <img src="https://images.bukaolshop.com/hosting/181218/8d3023b17da2729565.png" style="max-width:120px;" onerror="this.src='data:image/svg+xml,%3Csvg xmlns=\'http://www.w3.org/2000/svg\' width=\'100\' height=\'100\'%3E%3Ccircle cx=\'50\' cy=\'50\' r=\'45\' fill=\'%23004aad\'/%3E%3C/svg%3E';">
+            <h2 style="color:#004aad;">OVO</h2>
+            <div class="account-name" style="font-size:1.2rem;">a/n Rapz Official</div>
+            <div class="modal-number">0831 5312 5057</div>
+            <button class="modal-close" onclick="closeModal('ovoModal')">Tutup</button>
+        </div>
+    </div>
+
+    <!-- MODAL QRIS (DIPERBESAR UNTUK HP) -->
+    <div class="modal" id="qrisModal">
+        <div class="modal-content" style="max-width:600px;">
+            <h2 style="color:#004aad;">QRIS RAPZ OFFICIAL</h2>
+            <img src="https://images.bukaolshop.com/hosting/181218/4af8d6355866891570.png" alt="QRIS Rapz" style="max-width:450px; width:100%; border-radius:20px;" onerror="this.src='https://api.qrserver.com/v1/create-qr-code/?size=400x400&data=RapzOfficial';">
+            <p style="color:#004aad; margin:1rem 0; font-weight:500;">scan qris!</p>
+            <p style="font-size:0.9rem; color:#2c3e50;">wajib kirim bukti ke admin · no bukti no proses · foto harus jelas</p>
+            <button class="modal-close" onclick="closeModal('qrisModal')" style="margin-top:1rem;">Tutup</button>
+        </div>
+    </div>
+
+    <audio id="bgAudio" loop><source src="https://files.catbox.moe/lkatxn.mp3" type="audio/mpeg"></audio>
+
+    <script>
+        // ========== CREATE PARTICLES ==========
+        function createParticles() {
+            const container = document.getElementById('particles');
+            for (let i = 0; i < 30; i++) {
+                const p = document.createElement('div');
+                p.className = 'particle';
+                p.style.left = Math.random() * 100 + '%';
+                p.style.animationDelay = Math.random() * 5 + 's';
+                p.style.animationDuration = (3 + Math.random() * 4) + 's';
+                container.appendChild(p);
+            }
+        }
+        createParticles();
+
+        // ========== TYPING ANIMATION ==========
+        const phrases = [
+            "Selamat Datang Di Payment Rapz Official",
+            "DANA • OVO • QRIS",
+            "Pembayaran Mudah & Cepat"
+        ];
+        let pIndex = 0, cIndex = 0, isDeleting = false;
+        const typingEl = document.getElementById('typingText');
+        function typeEffect() {
+            const current = phrases[pIndex];
+            if (!isDeleting && cIndex <= current.length) {
+                typingEl.textContent = current.substring(0, cIndex++);
+                setTimeout(typeEffect, 100);
+            } else if (isDeleting && cIndex >= 0) {
+                typingEl.textContent = current.substring(0, cIndex--);
+                setTimeout(typeEffect, 50);
+            } else {
+                isDeleting = !isDeleting;
+                if (!isDeleting) pIndex = (pIndex + 1) % phrases.length;
+                setTimeout(typeEffect, 1500);
+            }
+        }
+        setTimeout(typeEffect, 500);
+
+        // ========== LOADING ==========
+        let prog = 0;
+        const bar = document.getElementById('loadingBar');
+        const per = document.getElementById('loadingPercent');
+        const loadInterval = setInterval(() => {
+            if (prog >= 100) clearInterval(loadInterval);
+            else { prog++; bar.style.width = prog + '%'; per.textContent = prog + '%'; }
+        }, 35);
+
+        // ========== INTRO & AUDIO ==========
+        const intro = document.getElementById('introScreen');
+        const main = document.getElementById('mainContent');
+        const enter = document.getElementById('enterBtn');
+        const audio = document.getElementById('bgAudio');
+        audio.play().catch(e => console.log('Autoplay dicegah'));
+
+        enter.addEventListener('click', () => {
+            intro.classList.add('hide');
+            setTimeout(() => {
+                intro.style.display = 'none';
+                main.style.display = 'block';
+            }, 800);
+        });
+
+        // Fallback audio
+        document.addEventListener('click', function playAudio() {
+            if (audio.paused) audio.play().catch(() => {});
+        }, { once: true });
+
+        // ========== MODAL FUNCTIONS ==========
+        window.showPopup = (type) => {
+            if (type === 'dana') document.getElementById('danaModal').style.display = 'flex';
+            else if (type === 'ovo') document.getElementById('ovoModal').style.display = 'flex';
+        };
+        window.openQrisModal = () => document.getElementById('qrisModal').style.display = 'flex';
+        window.closeModal = (id) => document.getElementById(id).style.display = 'none';
+        window.copyNumber = (num) => {
+            navigator.clipboard.writeText(num.replace(/\s/g, '')).then(() => alert('Nomor disalin!'));
+        };
+        window.onclick = (e) => { if (e.target.classList.contains('modal')) e.target.style.display = 'none'; };
+    </script>
+</body>
+              </html>
